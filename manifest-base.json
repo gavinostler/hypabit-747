@@ -4,7 +4,9 @@
     "title": "Hypabit 747",
     "manufacturer": "Boeing",
     "creator": "Hypabit",
-    "minimum_game_version": "1.0.0",
+    "minimum_game_version": "1.8.10",
+    "minimum_compatibility_version": "8.10.0.234",
+    "builder": "Microsoft Flight Simulator 2024",
     "package_order_hint": "SIMOBJECTS_PATCH",
     "release_notes": {
         "neutral": {

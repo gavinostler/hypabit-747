@@ -26,7 +26,7 @@ The cabin light positions are estimated from the aircraft's door layout and may 
 
 ## Installation
 
-Download the latest release and unzip it into your MSFS 2024 Community folder, then restart the simulator.
+Download the latest release and unzip it into your MSFS 2024 `Community2024` folder (next to `Community`), then restart the simulator. In the content manager it should be listed as an MSFS 2024 package.
 
 ## Building
 
