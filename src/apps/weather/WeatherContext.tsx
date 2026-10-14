@@ -8,6 +8,8 @@ type WeatherContextProps = {
     setMetar: (metar: IMetar | null) => void;
     taf: ITAF | null;
     setTaf: (metar: ITAF | null) => void;
+    atis: string | null;
+    setAtis: (atis: string | null) => void;
     theme: WeatherTheme;
     setTheme: (theme: WeatherTheme) => void;
     selectedAirport: string | null;
@@ -19,6 +21,8 @@ export const WeatherContext = React.createContext<WeatherContextProps>({
     setMetar: () => {},
     taf: null,
     setTaf: () => {},
+    atis: null,
+    setAtis: () => {},
     theme: themes.few,
     setTheme: () => {},
     selectedAirport: null,
@@ -29,10 +33,11 @@ export const WeatherContextProvider: FC<{ children: ReactNode | ReactNode[] }> =
     const [theme, setTheme] = useState<WeatherTheme>(themes.few);
     const [metar, setMetar] = useState<IMetar | null>(null);
     const [taf, setTaf] = useState<ITAF | null>(null);
+    const [atis, setAtis] = useState<string | null>(null);
     const [selectedAirport, setSelectedAirport] = useState<string | null>(null);
 
     return (
-        <WeatherContext.Provider value={{ metar, setMetar, taf, setTaf, theme, setTheme, selectedAirport, setSelectedAirport }}>
+        <WeatherContext.Provider value={{ metar, setMetar, taf, setTaf, atis, setAtis, theme, setTheme, selectedAirport, setSelectedAirport }}>
             {children}
         </WeatherContext.Provider>
     );

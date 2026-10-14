@@ -1,3 +1,4 @@
+export { Atis } from "./Atis";
 export { CloudCover } from "./CloudCover";
 export { DewPoint } from "./DewPoint";
 export { Metar } from "./Metar";

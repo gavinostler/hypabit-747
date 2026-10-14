@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FC } from "react";
 import styled, { css } from "styled-components";
-import { v4 as uuid } from 'uuid';
 
 type InputProps = {
     placeholder: string;
@@ -19,6 +18,8 @@ type InputProps = {
     manualValue?: string;
 };
 
+let inputCount = 0;
+
 export const Input: FC<InputProps> = ({
                                           placeholder,
                                           style,
@@ -34,7 +35,7 @@ export const Input: FC<InputProps> = ({
                                           autoFocus = false,
                                           manualValue,
                                       }) => {
-    const [guid] = useState(uuid());
+    const [guid] = useState(() => `hypabit-input-${++inputCount}`);
     const [focused, setFocused] = useState<boolean>(false);
     const [displayValue, setDisplayValue] = useState<string>("");
 
@@ -45,7 +46,6 @@ export const Input: FC<InputProps> = ({
         if (focused) {
             Coherent.trigger('FOCUS_INPUT_FIELD', guid, '', '', '', false);
         } else {
-            console.log("coherent")
             Coherent.trigger('UNFOCUS_INPUT_FIELD', guid);
         }
         return () => {

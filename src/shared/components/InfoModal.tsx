@@ -1,5 +1,5 @@
 import React, { FC, useContext } from "react";
-import { ModalContext } from "..";
+import { ModalContext } from "../ModalContext";
 import { Button, ButtonSection, Description, InsideContainer, Modal, TextSection, Title } from "./Modal";
 
 type InfoModalProps = {

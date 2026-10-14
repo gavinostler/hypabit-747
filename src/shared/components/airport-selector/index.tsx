@@ -2,7 +2,7 @@ import styled, { useTheme } from "styled-components";
 import React, { FC, useContext, useEffect, useState } from "react";
 import { Input } from "../Input";
 import { facilityLoader, getIdentFromIcao } from "../../lib/facility";
-import { AirportClass, AirportFacility, FacilitySearchType, FacilityType, SimbriefOfp } from "@microsoft/msfs-sdk";
+import { AirportClass, AirportFacility, FacilitySearchType, FacilityType } from "@microsoft/msfs-sdk";
 import ScrollContainer from "react-indiana-drag-scroll";
 import { FlightContext } from "../../lib/FlightContext";
 import { AirportSelectorItem } from "./AirportSelectorItem";

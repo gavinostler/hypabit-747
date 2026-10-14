@@ -1,6 +1,6 @@
 import React, { FC, ReactNode } from "react";
-import {usePersistentPropertyWithDefault } from "react-msfs";
-import { AtisSource, MetarSource, TafSource } from "../../lib/weather";
+import { usePersistentSetting } from "./hooks";
+import { AtisSource, MetarSource, TafSource } from "./lib/weather";
 
 type SettingsContextProps = {
     metarSource: MetarSource;
@@ -9,43 +9,30 @@ type SettingsContextProps = {
     setTafSource: (source: TafSource) => void;
     atisSource: AtisSource;
     setAtisSource: (source: AtisSource) => void;
-    simbridgePort: number;
-    setSimbridgePort: (port: number) => void;
+    simbriefUsername: string;
+    setSimbriefUsername: (username: string) => void;
 };
 
-const defaults: Pick<SettingsContextProps, "metarSource" | "tafSource" | "atisSource" | "simbridgePort"> = {
+const defaults: Pick<SettingsContextProps, "metarSource" | "tafSource" | "atisSource" | "simbriefUsername"> = {
     metarSource: "msfs",
     tafSource: "met",
     atisSource: "vatsim",
-    simbridgePort: 8380,
+    simbriefUsername: "",
 };
 
 export const SettingsContext = React.createContext<SettingsContextProps>({
-    metarSource: defaults.metarSource,
+    ...defaults,
     setMetarSource: () => {},
-    tafSource: defaults.tafSource,
     setTafSource: () => {},
-    atisSource: defaults.atisSource,
     setAtisSource: () => {},
-    simbridgePort: defaults.simbridgePort,
-    setSimbridgePort: () => {},
+    setSimbriefUsername: () => {},
 });
 
 export const SettingsContextProvider: FC<{ children: ReactNode | ReactNode[] }> = ({ children }) => {
-    const [metarSource, setMetarSource] = usePersistentPropertyWithDefault("SALTY_METAR_SOURCE", defaults.metarSource) as [
-        MetarSource,
-        (s: MetarSource) => void
-    ];
-    const [tafSource, setTafSource] = usePersistentPropertyWithDefault("SALTY_TAF_SOURCE", defaults.tafSource) as [
-        TafSource,
-        (s: TafSource) => void];
-
-    const [atisSource, setAtisSource] = usePersistentPropertyWithDefault("SALTY_ATIS_SOURCE", defaults.atisSource) as [
-        AtisSource,
-        (s: AtisSource) => void
-    ];
-
-    const [simbridgePort, setSimbridgePort] = usePersistentPropertyWithDefault("SALTY_SIMBRIDGE_PORT", defaults.simbridgePort.toString());
+    const [metarSource, setMetarSource] = usePersistentSetting<MetarSource>("HYPABIT_METAR_SOURCE", defaults.metarSource);
+    const [tafSource, setTafSource] = usePersistentSetting<TafSource>("HYPABIT_TAF_SOURCE", defaults.tafSource);
+    const [atisSource, setAtisSource] = usePersistentSetting<AtisSource>("HYPABIT_ATIS_SOURCE", defaults.atisSource);
+    const [simbriefUsername, setSimbriefUsername] = usePersistentSetting<string>("HYPABIT_SIMBRIEF_USERNAME", defaults.simbriefUsername);
 
     return (
         <SettingsContext.Provider
@@ -56,8 +43,8 @@ export const SettingsContextProvider: FC<{ children: ReactNode | ReactNode[] }> 
                 setTafSource,
                 atisSource,
                 setAtisSource,
-                simbridgePort: parseInt(simbridgePort),
-                setSimbridgePort,
+                simbriefUsername,
+                setSimbriefUsername,
             }}
         >
             {children}

@@ -16,7 +16,7 @@ export const registerReactEfbApp = ({ name, internalName, icon, component }: Rea
         private reactRoot: Root | null = null;
 
         public render(): VNode {
-            return FSComponent.buildComponent("div", { ref: this.containerRef, class: "hypabit-app" });
+            return FSComponent.buildComponent("div", { ref: this.containerRef, class: "hypabit-app" })!;
         }
 
         public onAfterRender(node: VNode): void {

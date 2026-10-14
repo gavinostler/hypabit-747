@@ -1,4 +1,5 @@
-import { SimbriefOfp, AirportFacility, FacilityType } from "@microsoft/msfs-sdk";
+import { AirportFacility, FacilityType } from "@microsoft/msfs-sdk";
+import { SimbriefOfp } from "../../lib/simbrief";
 import React, { FC, useState, useEffect } from "react";
 import { facilityLoader, getAirportIcaoFromIdent, getIdentFromIcao } from "../../lib/facility";
 import { AirportSelectorItem } from "./AirportSelectorItem";

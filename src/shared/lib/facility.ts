@@ -1,7 +1,6 @@
-import { eventBus } from "./index";
-import { FacilityLoader, FacilityRepository } from "@microsoft/msfs-sdk";
+import { EventBus, FacilityLoader, FacilityRepository } from "@microsoft/msfs-sdk";
 
-export const facilityLoader = new FacilityLoader(FacilityRepository.getRepository(eventBus));
+export const facilityLoader = new FacilityLoader(FacilityRepository.getRepository(new EventBus()));
 
 export const getIdentFromIcao = (icao: string): string => icao.slice(-5).trim();
 

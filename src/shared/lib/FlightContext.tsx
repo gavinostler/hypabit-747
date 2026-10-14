@@ -1,5 +1,5 @@
 import React, { createContext, FC, ReactNode, useState } from "react";
-import { SimbriefOfp } from "@microsoft/msfs-sdk";
+import { SimbriefOfp } from "./simbrief";
 
 export const FlightContext = createContext<{ ofp: SimbriefOfp | null; setOfp: (ofp: SimbriefOfp | null) => void }>({ ofp: null, setOfp: () => {} });
 

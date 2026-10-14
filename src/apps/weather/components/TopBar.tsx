@@ -4,15 +4,17 @@ import styled from "styled-components";
 import { IoIosRefresh } from "react-icons/io";
 import { FaChevronDown } from "react-icons/fa";
 import { AiOutlineCloudDownload } from "react-icons/ai";
+import { IoSettingsOutline } from "react-icons/io5";
 import { WeatherContext } from "../WeatherContext";
 
 type TopBarProps = {
     openAirportSelector: () => void;
     onRefresh: () => void;
     onUplink: () => void;
+    openSettings: () => void;
 };
 
-export const TopBar: FC<TopBarProps> = ({ openAirportSelector, onRefresh, onUplink }) => {
+export const TopBar: FC<TopBarProps> = ({ openAirportSelector, onRefresh, onUplink, openSettings }) => {
     const { theme, selectedAirport } = useContext(WeatherContext);
 
     return (
@@ -27,6 +29,9 @@ export const TopBar: FC<TopBarProps> = ({ openAirportSelector, onRefresh, onUpli
             <Icon onClick={onRefresh}>
                 <IoIosRefresh fill={theme.accentTextColor} size={32} />
             </Icon>
+            <Icon onClick={openSettings}>
+                <IoSettingsOutline color={theme.accentTextColor} size={32} />
+            </Icon>
         </StyledTopBar>
     );
 };
@@ -34,7 +39,7 @@ export const TopBar: FC<TopBarProps> = ({ openAirportSelector, onRefresh, onUpli
 
 const StyledTopBar = styled.div`
     position: absolute;
-    top: 50px;
+    top: 10px;
     left: 10px;
     display: flex;
     align-items: center;
