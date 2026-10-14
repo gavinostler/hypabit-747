@@ -1,4 +1,8 @@
-const wt = "html_ui/pages/vcockpit/instruments/airliners/wtb747_8iv2";
+const stockDir = "html_ui/pages/vcockpit/instruments/airliners/wtb747_8iv2";
+const simDir = "html_ui/Pages/VCockpit/Instruments/Airliners/WTB747_8iv2";
+
+// The extracted archive is lowercase, but the sim requests these files (and matches global overrides) with this casing.
+const file = (folder, name) => ({ path: `${stockDir}/${folder.toLowerCase()}/${name.toLowerCase()}`, output: `${simDir}/${folder}/${name}` });
 
 const colors = {
     green: "#3ad22d",
@@ -35,7 +39,7 @@ const operatingEmptyWeight = {
 
 export default [
     {
-        path: `${wt}/cdu/cdu.js`,
+        ...file("CDU", "CDU.js"),
         edits: [
             operatingEmptyWeight,
             {
@@ -64,7 +68,7 @@ export default [
         ],
     },
     {
-        path: `${wt}/mfd/mfd.js`,
+        ...file("MFD", "MFD.js"),
         edits: [
             operatingEmptyWeight,
             ...jsColorEdits,
@@ -73,10 +77,10 @@ export default [
         ],
     },
     {
-        path: `${wt}/pfd/pfd.js`,
+        ...file("PFD", "PFD.js"),
         edits: [operatingEmptyWeight, ...jsColorEdits, { find: "skyColor: '#006efb'", replace: `skyColor: '${colors.sky}'` }],
     },
-    { path: `${wt}/pfd/pfd.css`, edits: cssColorEdits },
-    { path: `${wt}/mfd/mfd.css`, edits: cssColorEdits },
-    { path: `${wt}/cdu/cdu.css`, edits: cssColorEdits },
+    { ...file("PFD", "PFD.css"), edits: cssColorEdits },
+    { ...file("MFD", "MFD.css"), edits: cssColorEdits },
+    { ...file("CDU", "CDU.css"), edits: cssColorEdits },
 ];
