@@ -1,7 +1,7 @@
 import { App, AppBootMode, AppSuspendMode, AppView, Efb, TVNode } from "@microsoft/msfs-efb-api";
 import { ComponentProps, DisplayComponent, FSComponent, VNode } from "@microsoft/msfs-sdk";
 import React, { ComponentType, ReactNode } from "react";
-import { createRoot, Root } from "react-dom/client";
+import { render, unmountComponentAtNode } from "react-dom";
 
 type ReactEfbAppOptions = {
     name: string;
@@ -32,7 +32,6 @@ class ErrorBoundary extends React.Component<{ appName: string; children: ReactNo
 export const registerReactEfbApp = ({ name, internalName, icon, component }: ReactEfbAppOptions): void => {
     class ReactAppView extends DisplayComponent<ReactAppViewProps> {
         private readonly containerRef = FSComponent.createRef<HTMLDivElement>();
-        private reactRoot: Root | null = null;
 
         public render(): VNode {
             return FSComponent.buildComponent("div", { ref: this.containerRef, class: "hypabit-app" })!;
@@ -41,17 +40,17 @@ export const registerReactEfbApp = ({ name, internalName, icon, component }: Rea
         public onAfterRender(node: VNode): void {
             super.onAfterRender(node);
             const container = this.containerRef.instance;
-            Object.assign(container.style, { position: "relative", width: "100%", height: "100%", overflow: "hidden" });
+            Object.assign(container.style, { position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden" });
+            // Legacy render mounts synchronously; createRoot's scheduler never ran in the sim's EFB, leaving a blank app.
             try {
-                this.reactRoot = createRoot(container);
-                this.reactRoot.render(React.createElement(ErrorBoundary, { appName: name, children: React.createElement(component, { app: this.props.app }) }));
+                render(React.createElement(ErrorBoundary, { appName: name, children: React.createElement(component, { app: this.props.app }) }), container);
             } catch (error) {
                 container.textContent = describe(name, error);
             }
         }
 
         public destroy(): void {
-            this.reactRoot?.unmount();
+            unmountComponentAtNode(this.containerRef.instance);
             super.destroy();
         }
     }

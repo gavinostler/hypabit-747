@@ -23,9 +23,11 @@ const msfsSdkGlobal = {
     },
 };
 
-// App scripts can load before the EFB has created msfssdk and EFB_API, so the bundle waits for both.
+// App scripts can load before the EFB has created msfssdk and EFB_API, so the bundle waits for both. React's scheduler
+// is also pointed at setTimeout, since the sim's browser engine may lack a working MessageChannel or queueMicrotask.
 const startWhenReady = {
-    banner: "(function () { function hypabitStart() {",
+    banner:
+        "(function () { function hypabitStart() { var MessageChannel = undefined; var queueMicrotask = typeof window.queueMicrotask === 'function' ? window.queueMicrotask.bind(window) : function (callback) { Promise.resolve().then(callback); };",
     footer:
         "} var tries = 0; var timer = setInterval(function () { if (window.msfssdk && window.EFB_API) { clearInterval(timer); hypabitStart(); } else if (++tries > 600) { clearInterval(timer); } }, 50); })();",
 };
