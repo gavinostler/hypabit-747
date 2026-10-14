@@ -7,11 +7,13 @@ type ReactEfbAppOptions = {
     name: string;
     internalName: string;
     icon: string;
-    component: ComponentType;
+    component: ComponentType<{ app: App }>;
 };
 
+type ReactAppViewProps = ComponentProps & { app: App };
+
 export const registerReactEfbApp = ({ name, internalName, icon, component }: ReactEfbAppOptions): void => {
-    class ReactAppView extends DisplayComponent<ComponentProps> {
+    class ReactAppView extends DisplayComponent<ReactAppViewProps> {
         private readonly containerRef = FSComponent.createRef<HTMLDivElement>();
         private reactRoot: Root | null = null;
 
@@ -23,7 +25,7 @@ export const registerReactEfbApp = ({ name, internalName, icon, component }: Rea
             super.onAfterRender(node);
             Object.assign(this.containerRef.instance.style, { position: "relative", width: "100%", height: "100%", overflow: "hidden" });
             this.reactRoot = createRoot(this.containerRef.instance);
-            this.reactRoot.render(React.createElement(component));
+            this.reactRoot.render(React.createElement(component, { app: this.props.app }));
         }
 
         public destroy(): void {
@@ -50,7 +52,7 @@ export const registerReactEfbApp = ({ name, internalName, icon, component }: Rea
         }
 
         public render(): TVNode<AppView> {
-            return FSComponent.buildComponent(ReactAppView, {}) as unknown as TVNode<AppView>;
+            return FSComponent.buildComponent<typeof ReactAppView, ReactAppViewProps>(ReactAppView, { app: this }) as unknown as TVNode<AppView>;
         }
     }
 
