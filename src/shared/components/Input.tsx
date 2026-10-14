@@ -82,7 +82,7 @@ export const Input: FC<InputProps> = ({
     const onFocusInput = () => {
         setFocused(true);
 
-        displayValue && setDisplayValue("");
+        setDisplayValue(manualValue ?? "");
 
         onFocus && onFocus();
     };
@@ -106,7 +106,7 @@ export const Input: FC<InputProps> = ({
     };
 
     const props = {
-        value: manualValue ? (applyFilters?.(manualValue) ?? manualValue) : displayValue,
+        value: focused || manualValue === undefined ? displayValue : (applyFilters?.(manualValue) ?? manualValue),
         onFocus: onFocusInput,
         onBlur,
         onChange,
