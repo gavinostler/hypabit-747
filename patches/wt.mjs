@@ -44,6 +44,23 @@ export default [
                 replace: `                [this.fms.payloadManager.getMaxPaxCount() > 0 ? ' PAX COUNT' : '', 'PAYLOAD'],
                 [this.fms.payloadManager.getMaxPaxCount() > 0 ? this.paxCountField : '', this.payloadPercField],`,
             },
+            {
+                find: `        this.updateCgData();
+    }
+    /** @inheritDoc */
+    onResume() {
+        this.gameUnit.resume();
+    }`,
+                replace: `        this.updateCgData();
+    }
+    /** @inheritDoc */
+    onResume() {
+        this.gameUnit.resume();
+        if (!this.fms.payloadManager.isProcessing.get()) {
+            this.fms.payloadManager.fetchCurrentWeightsFromSim();
+        }
+    }`,
+            },
         ],
     },
     {
