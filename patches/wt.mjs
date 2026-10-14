@@ -1,8 +1,21 @@
 const stockDir = "html_ui/pages/vcockpit/instruments/airliners/wtb747_8iv2";
-const simDir = "html_ui/Pages/VCockpit/Instruments/Airliners/WTB747_8iv2";
 
-// The extracted archive is lowercase, but the sim requests these files (and matches global overrides) with this casing.
-const file = (folder, name) => ({ path: `${stockDir}/${folder.toLowerCase()}/${name.toLowerCase()}`, output: `${simDir}/${folder}/${name}` });
+// MSFS 2024 won't let a package replace another package's html_ui files, so the patched instruments live in their own folder
+// and the panel.cfg patch points the screens at them.
+export const instrumentDir = "Hypabit/B748";
+const outputDir = `html_ui/Pages/VCockpit/Instruments/${instrumentDir}`;
+
+const file = (folder, name) => ({ path: `${stockDir}/${folder.toLowerCase()}/${name.toLowerCase()}`, output: `${outputDir}/${folder}/${name}` });
+
+const instrumentPage = (folder) => ({
+    ...file(folder, `WTB748_${folder}.html`),
+    edits: [
+        {
+            find: `import-script="/Pages/VCockpit/Instruments/Airliners/WTB747_8iv2/${folder}/${folder}.js"`,
+            replace: `import-script="/Pages/VCockpit/Instruments/${instrumentDir}/${folder}/${folder}.js"`,
+        },
+    ],
+});
 
 const colors = {
     green: "#3ad22d",
@@ -83,4 +96,5 @@ export default [
     { ...file("PFD", "PFD.css"), edits: cssColorEdits },
     { ...file("MFD", "MFD.css"), edits: cssColorEdits },
     { ...file("CDU", "CDU.css"), edits: cssColorEdits },
+    ...["CDU", "MFD", "PFD"].map(instrumentPage),
 ];

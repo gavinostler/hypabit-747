@@ -52,14 +52,10 @@ function applyPatch(patch) {
     fs.writeFileSync(target, text, "latin1");
 }
 
-const globalOverrides = [];
-
 if (fs.existsSync(stock)) {
     for (const patch of patches) {
         applyPatch(patch);
     }
-    // MSFS 2024 ignores html_ui files that replace stock ones unless the manifest lists them.
-    globalOverrides.push(...patches.map((patch) => patch.output ?? patch.path).filter((file) => file.startsWith("html_ui/")));
     fs.cpSync(path.join(root, "package"), out, { recursive: true });
 } else {
     console.warn(`No stock files at ${stock}; building the EFB apps only. Run scripts/extract-stock.mjs to include the aircraft fixes.`);
@@ -119,7 +115,6 @@ fs.writeFileSync(
             ...manifestBase,
             package_version: pkg.version,
             total_package_size: totalSize.toString().padStart(20, "0"),
-            ...(globalOverrides.length > 0 && { globally_overriden_base_sim_files: globalOverrides }),
         },
         null,
         2,
