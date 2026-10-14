@@ -9,7 +9,10 @@ const out = path.join(root, "build", "hypabit-747");
 const pkg = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
 const manifestBase = JSON.parse(fs.readFileSync(path.join(root, "manifest-base.json"), "utf8"));
 
-const apps = [{ internalName: "HypabitWeather", entry: "src/apps/weather/index.tsx" }];
+const apps = [
+    { internalName: "HypabitWeather", entry: "src/apps/weather/index.tsx" },
+    { internalName: "HypabitGround", entry: "src/apps/ground/index.tsx" },
+];
 
 // The EFB loads the SDK once as the msfssdk global; bundling a second copy would break class identity with the OS.
 const msfsSdkGlobal = {
