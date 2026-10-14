@@ -43,11 +43,10 @@ export const Input: FC<InputProps> = ({
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
-        if (focused) {
-            Coherent.trigger('FOCUS_INPUT_FIELD', guid, '', '', '', false);
-        } else {
-            Coherent.trigger('UNFOCUS_INPUT_FIELD', guid);
+        if (!focused) {
+            return undefined;
         }
+        Coherent.trigger('FOCUS_INPUT_FIELD', guid, '', '', '', false);
         return () => {
             Coherent.trigger('UNFOCUS_INPUT_FIELD', guid);
         };
