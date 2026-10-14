@@ -1,6 +1,6 @@
 import { App, AppBootMode, AppSuspendMode, AppView, Efb, TVNode } from "@microsoft/msfs-efb-api";
 import { ComponentProps, DisplayComponent, FSComponent, VNode } from "@microsoft/msfs-sdk";
-import React, { ComponentType } from "react";
+import React, { ComponentType, ReactNode } from "react";
 import { createRoot, Root } from "react-dom/client";
 
 type ReactEfbAppOptions = {
@@ -11,6 +11,23 @@ type ReactEfbAppOptions = {
 };
 
 type ReactAppViewProps = ComponentProps & { app: App };
+
+const describe = (appName: string, error: unknown): string =>
+    `${appName} hit an error. Please report this message:\n\n${error instanceof Error ? `${error.message}\n\n${error.stack ?? ""}` : String(error)}`;
+
+const errorStyle = { margin: 0, padding: 24, color: "#b00020", background: "#fff", font: "18px monospace", whiteSpace: "pre-wrap", height: "100%", overflow: "auto" };
+
+class ErrorBoundary extends React.Component<{ appName: string; children: ReactNode }, { error: unknown }> {
+    public state = { error: null as unknown };
+
+    public static getDerivedStateFromError(error: unknown) {
+        return { error };
+    }
+
+    public render() {
+        return this.state.error ? React.createElement("pre", { style: errorStyle }, describe(this.props.appName, this.state.error)) : this.props.children;
+    }
+}
 
 export const registerReactEfbApp = ({ name, internalName, icon, component }: ReactEfbAppOptions): void => {
     class ReactAppView extends DisplayComponent<ReactAppViewProps> {
@@ -23,9 +40,14 @@ export const registerReactEfbApp = ({ name, internalName, icon, component }: Rea
 
         public onAfterRender(node: VNode): void {
             super.onAfterRender(node);
-            Object.assign(this.containerRef.instance.style, { position: "relative", width: "100%", height: "100%", overflow: "hidden" });
-            this.reactRoot = createRoot(this.containerRef.instance);
-            this.reactRoot.render(React.createElement(component, { app: this.props.app }));
+            const container = this.containerRef.instance;
+            Object.assign(container.style, { position: "relative", width: "100%", height: "100%", overflow: "hidden" });
+            try {
+                this.reactRoot = createRoot(container);
+                this.reactRoot.render(React.createElement(ErrorBoundary, { appName: name, children: React.createElement(component, { app: this.props.app }) }));
+            } catch (error) {
+                container.textContent = describe(name, error);
+            }
         }
 
         public destroy(): void {
