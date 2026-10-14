@@ -9,9 +9,17 @@ export const fromPounds = (lb: number, unit: WeightUnit): number => (unit === "k
 
 export const toPounds = (value: number, unit: WeightUnit): number => (unit === "kg" ? value * LB_PER_KG : value);
 
-export const formatWeight = (lb: number, unit: WeightUnit): string => `${Math.round(fromPounds(lb, unit)).toLocaleString("en-US")} ${unit}`;
+const withThousands = (value: number): string => String(Math.round(value)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-const simUnit = (): WeightUnit => (SimVar.GetGameVarValue("GAME UNIT IS METRIC", "boolean") ? "kg" : "lb");
+export const formatWeight = (lb: number, unit: WeightUnit): string => `${withThousands(fromPounds(lb, unit))} ${unit}`;
+
+const simUnit = (): WeightUnit => {
+    try {
+        return SimVar.GetGameVarValue("GAME UNIT IS METRIC", "number") ? "kg" : "lb";
+    } catch {
+        return "kg";
+    }
+};
 
 export const useWeightUnit = (app: App): WeightUnit => {
     const [unit, setUnit] = useState<WeightUnit>(simUnit);

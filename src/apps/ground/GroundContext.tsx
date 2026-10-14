@@ -62,10 +62,14 @@ export const GroundProvider: FC<{ app: App; children: ReactNode }> = ({ app, chi
 
     useEffect(() => {
         const timer = setInterval(() => {
-            const current = detectVariant();
-            setSupported(isB748());
-            setVariant(current);
-            setLive(readLive(current));
+            try {
+                const current = detectVariant();
+                setSupported(isB748());
+                setVariant(current);
+                setLive(readLive(current));
+            } catch (error) {
+                console.error("Hypabit Ground: failed to read the aircraft", error);
+            }
         }, 1000);
         return () => clearInterval(timer);
     }, []);
