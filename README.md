@@ -1,3 +1,5 @@
+!!! created with claude... i dont want to spend 900 years building a custom 747 !!!
+
 # Hypabit 747
 
 An enhancement mod for the stock Boeing 747-8 in Microsoft Flight Simulator 2024.
