@@ -16,14 +16,30 @@ export const startCabinLights = (): void => {
     let keys: KeyEventManager | undefined;
     KeyEventManager.getManager(new EventBus()).then((manager) => (keys = manager));
 
+    let unanswered = 0;
+    let lastTarget = -1;
     setInterval(() => {
-        if (!keys || !isB748() || detectVariant().freighter) {
-            return;
-        }
-        const target = isPowered() ? cabinLevel() : 0;
-        const current = SimVar.GetSimVarValue(`LIGHT POTENTIOMETER:${POTENTIOMETER}`, "percent");
-        if (Math.abs(current - target) > 0.5) {
-            keys.triggerKey("LIGHT_POTENTIOMETER_SET", true, POTENTIOMETER, target);
+        try {
+            if (!keys || !isB748() || detectVariant().freighter) {
+                return;
+            }
+            const target = isPowered() ? cabinLevel() : 0;
+            if (target !== lastTarget) {
+                lastTarget = target;
+                unanswered = 0;
+            }
+            const current = SimVar.GetSimVarValue(`LIGHT POTENTIOMETER:${POTENTIOMETER}`, "percent");
+            if (Math.abs(current - target) <= 0.5) {
+                unanswered = 0;
+                return;
+            }
+            // If the cabin light attachment isn't loaded the potentiometer never moves, so back off instead of sending every second.
+            if (unanswered < 5 || unanswered % 30 === 0) {
+                keys.triggerKey("LIGHT_POTENTIOMETER_SET", true, POTENTIOMETER, target);
+            }
+            unanswered++;
+        } catch (error) {
+            console.error("Hypabit Ground: cabin light update failed", error);
         }
     }, 1000);
 };
