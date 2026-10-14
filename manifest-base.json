@@ -5,6 +5,7 @@
     "manufacturer": "Boeing",
     "creator": "Hypabit",
     "minimum_game_version": "1.0.0",
+    "package_order_hint": "SIMOBJECTS_PATCH",
     "release_notes": {
         "neutral": {
             "LastUpdate": "",

@@ -2,6 +2,7 @@ import { build } from "esbuild";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import patches from "../patches/index.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const out = path.join(root, "build", "hypabit-747");
@@ -27,6 +28,35 @@ const startWhenReady = {
 };
 
 fs.rmSync(out, { recursive: true, force: true });
+
+const stock = path.resolve(process.env.HYPABIT_STOCK ?? path.join(root, "stock"));
+
+function applyPatch(patch) {
+    let text = fs.readFileSync(path.join(stock, patch.path), "latin1");
+    for (const edit of patch.edits ?? []) {
+        const expected = edit.count ?? 1;
+        const found = text.split(edit.find).length - 1;
+        if (found !== expected) {
+            throw new Error(`${patch.path}: expected ${expected} match(es) for ${JSON.stringify(edit.find.slice(0, 80))}, found ${found}`);
+        }
+        text = text.split(edit.find).join(edit.replace);
+    }
+    if (patch.transform) {
+        text = patch.transform(text);
+    }
+    const target = path.join(out, patch.path);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.writeFileSync(target, text, "latin1");
+}
+
+if (fs.existsSync(stock)) {
+    for (const patch of patches) {
+        applyPatch(patch);
+    }
+    fs.cpSync(path.join(root, "package"), out, { recursive: true });
+} else {
+    console.warn(`No stock files at ${stock}; building the EFB apps only. Run scripts/extract-stock.mjs to include the aircraft fixes.`);
+}
 
 for (const app of apps) {
     await build({
